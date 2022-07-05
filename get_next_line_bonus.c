@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tchantro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/26 16:00:34 by tchantro          #+#    #+#             */
-/*   Updated: 2022/07/05 16:59:23 by tchantro         ###   ########.fr       */
+/*   Created: 2022/07/05 13:45:57 by tchantro          #+#    #+#             */
+/*   Updated: 2022/07/05 16:53:12 by tchantro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int	ft_gnlen(char *str)
 {
@@ -71,7 +71,7 @@ char	*gnl_bis(char *buff, char *stash, int i, int fd)
 char	*get_next_line(int fd)
 {
 	char		buff[BUFFER_SIZE + 1];
-	static char	*stash;
+	static char	*stash[1024];
 	char		*line;
 	int			i;
 	int			len;
@@ -79,20 +79,20 @@ char	*get_next_line(int fd)
 	i = 1;
 	if (fd == -1 || fd > 1024 || BUFFER_SIZE == 0)
 		return (NULL);
-	stash = gnl_bis(buff, stash, i, fd);
-	if (stash == NULL)
+	stash[fd] = gnl_bis(buff, stash[fd], i, fd);
+	if (stash[fd] == NULL)
 		return (NULL);
-	len = ft_gnlen(stash);
-	if (ft_strlen(stash) == len || len == 0)
+	len = ft_gnlen(stash[fd]);
+	if (ft_strlen(stash[fd]) == len || len == 0)
 	{
-		line = ft_strdup(stash);
-		free(stash);
-		stash = NULL;
+		line = ft_strdup(stash[fd]);
+		free(stash[fd]);
+		stash[fd] = NULL;
 	}
 	else
 	{
-		line = ft_strndup(stash, len);
-		stash = ft_substr(stash, len, ft_strlen(stash) - len);
+		line = ft_strndup(stash[fd], len);
+		stash[fd] = ft_substr(stash[fd], len, ft_strlen(stash[fd]) - len);
 		if (stash[fd] == NULL)
 			return (NULL);
 	}
@@ -109,7 +109,7 @@ int	main()
 	fd = open("test", O_RDONLY);
 	if (fd == -1)
 		return (1);
-	while (i++ < 45)
+	while (i++ < 28)
 	{
 		str = get_next_line(fd);
 		printf("%s", str);
