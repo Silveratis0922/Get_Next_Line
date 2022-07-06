@@ -6,7 +6,7 @@
 /*   By: tchantro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 13:45:57 by tchantro          #+#    #+#             */
-/*   Updated: 2022/07/05 16:53:12 by tchantro         ###   ########.fr       */
+/*   Updated: 2022/07/06 14:17:55 by tchantro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,11 @@ char	*ft_strndup(char *s, int size)
 
 char	*gnl_bis(char *buff, char *stash, int i, int fd)
 {
+	int	i;
+
+	i = 1;
+	if (fd < 0 || fd > 1024 || BUFFER_SIZE == 0)
+		return (NULL);
 	while (ft_gnlen(stash) == 0 && i != 0)
 	{
 		i = read(fd, buff, BUFFER_SIZE);
@@ -73,12 +78,8 @@ char	*get_next_line(int fd)
 	char		buff[BUFFER_SIZE + 1];
 	static char	*stash[1024];
 	char		*line;
-	int			i;
 	int			len;
 
-	i = 1;
-	if (fd == -1 || fd > 1024 || BUFFER_SIZE == 0)
-		return (NULL);
 	stash[fd] = gnl_bis(buff, stash[fd], i, fd);
 	if (stash[fd] == NULL)
 		return (NULL);
